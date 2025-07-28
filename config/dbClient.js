@@ -1,20 +1,30 @@
-import { MongoClient } from 'mongodb';
 import 'dotenv/config';
+import mongoose from 'mongoose';
 
 class dbClient {
   constructor() {
-    const queryString = `mongodb+srv://${process.env.USER_DB}:${process.env.PASSWORD_DB}@${process.env.SERVER_DB}/?retryWrites=true&w=majority&appName=Cluster0`;
-    this.client = new MongoClient(queryString);
-    this.conectDb();
+    this.connect();
   }
 
-  async conectDb() {
+  async connect() {
     try {
-      await this.client.connect();
-      this.db = this.client.db('adopcion');
-      console.log('Connected to db');
+      const queryString = `mongodb+srv://${process.env.USER_DB}:${process.env.PASSWORD_DB}@${process.env.SERVER_DB}/adoption?retryWrites=true&w=majority`;
+      await mongoose.connect(queryString);
+      console.log('Conected to the database.');
+      
     } catch (e) {
-      console.log('Error to connect db' + e);
+      console.log('Error connection to the dabatase' + e);
+    }
+  }
+
+  async disconnect() {
+    try {
+      await mongoose.disconnect();
+      console.log('disconect to the database. ');
+      
+    } catch (e) {
+      console.log(e);
+      console.log('Error disconnecting to dabatase' + e);
     }
   }
 }
